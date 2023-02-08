@@ -1,0 +1,12 @@
+# dataset
+dataset:
+  path: ../dataset/
+
+# camera intrinsics
+camera:
+  fx: 517.3
+  fy: 516.5
+  ux: 325.1
+  vy: 249.7
+
+
