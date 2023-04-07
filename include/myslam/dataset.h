@@ -1,5 +1,6 @@
 #ifndef MYSLAM_DATASET_H
 #define MYSLAM_DATASET_H
+
 #include "myslam/camera.h"
 #include "myslam/common_include.h"
 #include "myslam/frame.h"
@@ -7,33 +8,54 @@
 namespace myslam {
 
 /**
- * Dataset read the configuration file path is passed in during construction, 
- * and the dataset_dir of the configuration file is the dataset path
- * After Init, the camera and the next frame image can be obtained
+ * This class represents a dataset of images and provides methods to
+ * access the images and their associated cameras.
  */
 class Dataset {
-   public:
+public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+
+    // A shared pointer to the Dataset class
     typedef std::shared_ptr<Dataset> Ptr;
+
+    /**
+     * Constructs a Dataset object given the path to the dataset configuration file.
+     *
+     * @param dataset_path The path to the dataset configuration file.
+     */
     Dataset(const std::string& dataset_path);
 
-    /// Initialize, return whether it is successful
+    /**
+     * Initializes the dataset and returns whether the initialization was successful.
+     *
+     * @return `true` if the initialization was successful, `false` otherwise.
+     */
     bool Init();
 
-    /// create and return the next frame containing the stereo images
+    /**
+     * Returns the next frame containing the stereo images.
+     *
+     * @return A shared pointer to the Frame object containing the stereo images.
+     */
     Frame::Ptr NextFrame();
 
-    /// get camera by id
+    /**
+     * Returns the camera with the specified ID.
+     *
+     * @param camera_id The ID of the camera.
+     * @return A shared pointer to the Camera object.
+     */
     Camera::Ptr GetCamera(int camera_id) const {
         return cameras_.at(camera_id);
     }
 
-   private:
-    std::string dataset_path_;
-    int current_image_index_ = 0;
+private:
+    std::string dataset_path_; // The path to the dataset directory
+    int current_image_index_ = 0; // The index of the current image being processed
+    std::vector<Camera::Ptr> cameras_; // A vector containing all the cameras in the dataset
 
-    std::vector<Camera::Ptr> cameras_;
 };
+
 }  // namespace myslam
 
 #endif
