@@ -1,3 +1,20 @@
+/*
+The Dataset class has the following member variables:
+
+* dataset_path_: a string that holds the path to the dataset directory.
+* current_image_index_: an integer that holds the index of the current image being processed.
+* cameras_: a vector of Camera::Ptr shared pointers that holds all the cameras in the dataset.
+
+
+The Dataset class has the following member functions:
+
+* Dataset(const std::string& dataset_path): the constructor that takes a string argument representing the path to the dataset directory.
+* bool Init(): initializes the dataset and returns whether the initialization was successful.
+* Frame::Ptr NextFrame(): returns the next frame containing the stereo images.
+* Camera::Ptr GetCamera(int camera_id) const: returns the camera with the specified ID.
+
+========================================================================================================================*/
+
 #ifndef MYSLAM_DATASET_H
 #define MYSLAM_DATASET_H
 
