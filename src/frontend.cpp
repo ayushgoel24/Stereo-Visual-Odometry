@@ -51,14 +51,13 @@ bool Frontend::AddFrame(myslam::Frame::Ptr frame) {
 int Frontend::DetectFeatures() {
     // create a mask to avoid re-detection of existing features
     cv::Mat mask(current_frame_->left_img_.size(), CV_8UC1, 255);
-    /**
-     * This loop iterates over each feature in the `current_frame_->features_left_ vector` and draws 
-     * a rectangle around it in the mask image. The rectangle is defined by subtracting and adding 
-     * a 10 pixel offset to the feature's position. The `CV_FILLED` flag is used to fill the rectangle 
-     * with 0 (black) color. This is done to prevent detecting features that have already been detected 
-     * in previous frames. By masking out these features, the detector can focus on detecting new 
-     * features in the current frame.
-    */
+
+    // This loop iterates over each feature in the `current_frame_->features_left_ vector` and draws 
+    // a rectangle around it in the mask image. The rectangle is defined by subtracting and adding 
+    // a 10 pixel offset to the feature's position. The `CV_FILLED` flag is used to fill the rectangle 
+    // with 0 (black) color. This is done to prevent detecting features that have already been detected 
+    // in previous frames. By masking out these features, the detector can focus on detecting new 
+    // features in the current frame.
     for (auto &feat : current_frame_->features_left_) {
         cv::rectangle(mask, feat->position_.pt - cv::Point2f(10, 10),
                       feat->position_.pt + cv::Point2f(10, 10), 0, CV_FILLED);
