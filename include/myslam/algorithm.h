@@ -8,9 +8,9 @@ namespace myslam {
 
 /**
  * linear triangulation with SVD
- * @param poses     poses,
- * @param points    points in normalized plane
- * @param pt_world  triangulated point in the world
+ * @param poses     a vector containing the poses of the cameras in the form of SE3 objects,
+ * @param points    a vector containing the normalized image coordinates of the corresponding points in both camera views,
+ * @param pt_world  a reference to a Vec3 object that will hold the triangulated point in the world coordinate system.
  * @return true if success
  */
 inline bool triangulation(const std::vector<SE3> &poses,
