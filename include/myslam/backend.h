@@ -47,6 +47,10 @@ class Backend {
     std::thread backend_thread_;
     std::mutex data_mutex_;
 
+    /**
+     * After the backend is started, it will wait for the condition variable of map_update_
+     * When the map update is triggered, take the activated keyframes and map points from the map and perform optimization:
+    */
     std::condition_variable map_update_;
     std::atomic<bool> backend_running_;
 
