@@ -10,17 +10,19 @@
 
 namespace myslam {
 
+// Forward declarations
 class Backend;
 class Viewer;
 
+// Enumeration for frontend status
 enum class FrontendStatus { INITING, TRACKING_GOOD, TRACKING_BAD, LOST };
 
 /**
- * front end
- * Estimate the current frame Pose, add keyframes to the map and trigger optimization when the keyframe conditions are met
- */
+ * Frontend class
+ * Estimates the current frame pose, adds keyframes to the map, and triggers optimization when the keyframe conditions are met
+*/
 class Frontend {
-   public:
+public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
     typedef std::shared_ptr<Frontend> Ptr;
 
@@ -31,9 +33,7 @@ class Frontend {
 
     // Set function
     void SetMap(Map::Ptr map) { map_ = map; }
-
     void SetBackend(std::shared_ptr<Backend> backend) { backend_ = backend; }
-
     void SetViewer(std::shared_ptr<Viewer> viewer) { viewer_ = viewer; }
 
     FrontendStatus GetStatus() const { return status_; }
@@ -110,9 +110,8 @@ class Frontend {
      */
     void SetObservationsForKeyFrame();
 
-    // data
+    // Data members
     FrontendStatus status_ = FrontendStatus::INITING;
-
     Frame::Ptr current_frame_ = nullptr;  // current frame
     Frame::Ptr last_frame_ = nullptr;     // previous frame
     Camera::Ptr camera_left_ = nullptr;   // left camera
