@@ -1,4 +1,4 @@
-/*
+/**
 The Dataset class has the following member variables:
 
 * dataset_path_: a string that holds the path to the dataset directory.
@@ -29,6 +29,7 @@ namespace myslam {
  * access the images and their associated cameras.
  */
 class Dataset {
+
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
@@ -40,7 +41,7 @@ public:
      *
      * @param dataset_path The path to the dataset configuration file.
      */
-    Dataset(const std::string& dataset_path);
+    Dataset( const std::string& dataset_path );
 
     /**
      * Initializes the dataset and returns whether the initialization was successful.
@@ -62,7 +63,7 @@ public:
      * @param camera_id The ID of the camera.
      * @return A shared pointer to the Camera object.
      */
-    Camera::Ptr GetCamera(int camera_id) const {
+    Camera::Ptr GetCamera( int camera_id ) const {
         return cameras_.at(camera_id);
     }
 

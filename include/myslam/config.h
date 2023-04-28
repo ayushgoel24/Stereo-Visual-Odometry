@@ -3,7 +3,7 @@
 #ifndef MYSLAM_CONFIG_H
 #define MYSLAM_CONFIG_H
 
-#include "myslam/common_include.h" // Include necessary headers
+#include "myslam/common_include.h"
 
 namespace myslam {
 
@@ -12,22 +12,28 @@ namespace myslam {
  * using the singleton pattern.
  */
 class Config {
-private:
-    static std::shared_ptr<Config> config_; // Static member variable for singleton pattern
-    cv::FileStorage file_; // cv::FileStorage object to read parameter values
 
-    Config() {} // Private constructor for singleton pattern
+private:
+    // Static member variable for singleton pattern
+    static std::shared_ptr<Config> config_;
+    // cv::FileStorage object to read parameter values
+    cv::FileStorage file_;
+
+    // Private constructor for singleton pattern
+    Config() {} 
 
 public:
-    ~Config(); // Destructor to release the cv::FileStorage resource
+    // Destructor to release the cv::FileStorage resource
+    ~Config(); 
 
     // Set the configuration file to be used for reading parameter values
-    static bool SetParameterFile(const std::string& filename);
+    static bool SetParameterFile( const std::string& filename );
 
     // Get the value of a parameter specified by its key
     template<typename T>
-    static T Get(const std::string& key) {
-        return T(Config::config_->file_[key]); // Return the value of the specified parameter
+    static T Get( const std::string& key ) {
+        // Return the value of the specified parameter
+        return T( Config::config_->file_[ key ] );
     }
 };
 

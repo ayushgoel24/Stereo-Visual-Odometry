@@ -17,7 +17,8 @@ struct MapPoint;
  * will be associated with a map point after triangulation
  */
 struct Feature {
-   public:
+
+public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
     typedef std::shared_ptr<Feature> Ptr;
 
@@ -31,7 +32,7 @@ struct Feature {
    public:
     Feature() {}
 
-    Feature(std::shared_ptr<Frame> frame, const cv::KeyPoint &kp)
+    Feature( std::shared_ptr<Frame> frame, const cv::KeyPoint &kp )
         : frame_(frame), position_(kp) {}
 };
 }  // namespace myslam

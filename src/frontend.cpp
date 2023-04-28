@@ -1,5 +1,4 @@
 #include <opencv2/opencv.hpp>
-
 #include "myslam/algorithm.h"
 #include "myslam/backend.h"
 #include "myslam/config.h"
@@ -21,12 +20,12 @@ Frontend::Frontend() {
     num_features_ = Config::Get<int>("num_features");
 }
 
-bool Frontend::AddFrame(myslam::Frame::Ptr frame) {
+bool Frontend::AddFrame( myslam::Frame::Ptr frame ) {
     // Set current frame to be the one provided
     current_frame_ = frame;
 
     // Based on the current status of the frontend, call the appropriate method
-    switch (status_) {
+    switch ( status_ ) {
         case FrontendStatus::INITING:
             // Perform stereo initialization
             StereoInit();
@@ -50,17 +49,16 @@ bool Frontend::AddFrame(myslam::Frame::Ptr frame) {
 // Used to detect new features in the current frame's left image using the GFTT feature detector.
 int Frontend::DetectFeatures() {
     // create a mask to avoid re-detection of existing features
-    cv::Mat mask(current_frame_->left_img_.size(), CV_8UC1, 255);
+    cv::Mat mask( current_frame_->left_img_.size(), CV_8UC1, 255 );
 
-    // This loop iterates over each feature in the `current_frame_->features_left_ vector` and draws 
+    // This loop iterates over each feature in the `current_frame_->features_left_` vector and draws 
     // a rectangle around it in the mask image. The rectangle is defined by subtracting and adding 
     // a 10 pixel offset to the feature's position. The `CV_FILLED` flag is used to fill the rectangle 
     // with 0 (black) color. This is done to prevent detecting features that have already been detected 
     // in previous frames. By masking out these features, the detector can focus on detecting new 
     // features in the current frame.
-    for (auto &feat : current_frame_->features_left_) {
-        cv::rectangle(mask, feat->position_.pt - cv::Point2f(10, 10),
-                      feat->position_.pt + cv::Point2f(10, 10), 0, CV_FILLED);
+    for ( auto &feat : current_frame_->features_left_ ) {
+        cv::rectangle( mask, feat->position_.pt - cv::Point2f(10, 10), feat->position_.pt + cv::Point2f(10, 10), 0, CV_FILLED );
     }
 
     // detect new keypoints using the GFTT feature detector
@@ -71,13 +69,12 @@ int Frontend::DetectFeatures() {
      * the current frame's left image, the output vector of keypoints, and a mask specifying which 
      * regions of the image to exclude from the feature detection.
     */
-    gftt_->detect(current_frame_->left_img_, keypoints, mask);
+    gftt_->detect( current_frame_->left_img_, keypoints, mask );
     
     // create features for the detected keypoints
     int cnt_detected = 0;
-    for (auto &kp : keypoints) {
-        current_frame_->features_left_.push_back(
-            Feature::Ptr(new Feature(current_frame_, kp)));
+    for ( auto &kp : keypoints ) {
+        current_frame_->features_left_.push_back( Feature::Ptr( new Feature( current_frame_, kp ) ) );
         cnt_detected++;
     }
 
@@ -95,12 +92,11 @@ int Frontend::FindFeaturesInRight() {
         auto mp = kp->map_point_.lock();
         if (mp) {
             // use projected points as initial guess
-            auto px =
-                camera_right_->world2pixel(mp->pos_, current_frame_->Pose());
-            kps_right.push_back(cv::Point2f(px[0], px[1]));
+            auto px = camera_right_->world2pixel( mp->pos_, current_frame_->Pose() );
+            kps_right.push_back( cv::Point2f( px[0], px[1] ) );
         } else {
             // use same pixel in left iamge
-            kps_right.push_back(kp->position_.pt);
+            kps_right.push_back( kp->position_.pt );
         }
     }
 
@@ -126,15 +122,15 @@ int Frontend::FindFeaturesInRight() {
         kps_right, status, error, cv::Size(11, 11), 3,
         cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 30,
                          0.01),
-        cv::OPTFLOW_USE_INITIAL_FLOW);
+        cv::OPTFLOW_USE_INITIAL_FLOW );
 
     // create features for the corresponding keypoints in the right image
     int num_good_pts = 0;
-    for (size_t i = 0; i < status.size(); ++i) {
-        if (status[i]) {
+    for ( size_t i = 0; i < status.size(); ++i ) {
+        if ( status[i] ) {
             // creates a new cv::KeyPoint object named kp using the coordinates of the i-th keypoint in 
             // kps_right as its center, and a size of 7 pixels
-            cv::KeyPoint kp(kps_right[i], 7);
+            cv::KeyPoint kp( kps_right[i], 7 );
             Feature::Ptr feat(new Feature(current_frame_, kp));
             feat->is_on_left_image_ = false;
             current_frame_->features_right_.push_back(feat);
@@ -159,32 +155,36 @@ int Frontend::FindFeaturesInRight() {
 */
 bool Frontend::BuildInitMap() {
     // Get the poses of the left and right cameras
-    std::vector<SE3> poses{camera_left_->pose(), camera_right_->pose()};
+    std::vector<SE3> poses{ camera_left_->pose(), camera_right_->pose() };
     size_t cnt_init_landmarks = 0;
+    
     // Loop through each feature point in the left image of the current frame
-    for (size_t i = 0; i < current_frame_->features_left_.size(); ++i) {
+    for ( size_t i = 0; i < current_frame_->features_left_.size(); ++i ) {
         
         // If there is no corresponding feature point in the right image, skip this point
-        if (current_frame_->features_right_[i] == nullptr) continue;
+        if ( current_frame_->features_right_[i] == nullptr ) continue;
         
         // Triangulate the feature points to get a 3D world point
         std::vector<Vec3> points{
-            camera_left_->pixel2camera(
-                Vec2(current_frame_->features_left_[i]->position_.pt.x,
-                     current_frame_->features_left_[i]->position_.pt.y)),
+            camera_left_->pixel2camera( 
+                Vec2( current_frame_->features_left_[i]->position_.pt.x,
+                     current_frame_->features_left_[i]->position_.pt.y )
+                ),
             camera_right_->pixel2camera(
-                Vec2(current_frame_->features_right_[i]->position_.pt.x,
-                     current_frame_->features_right_[i]->position_.pt.y))};
+                Vec2( current_frame_->features_right_[i]->position_.pt.x,
+                     current_frame_->features_right_[i]->position_.pt.y )
+                )
+        };
         Vec3 pworld = Vec3::Zero();
 
-        if (triangulation(poses, points, pworld) && pworld[2] > 0) {
+        if ( triangulation( poses, points, pworld ) && pworld[2] > 0 ) {
             // Create a new map point from the triangulated 3D point
             auto new_map_point = MapPoint::CreateNewMappoint();
             new_map_point->SetPos(pworld);
             
             // Add the observations of the feature points to the new map point
-            new_map_point->AddObservation(current_frame_->features_left_[i]);
-            new_map_point->AddObservation(current_frame_->features_right_[i]);
+            new_map_point->AddObservation( current_frame_->features_left_[i] );
+            new_map_point->AddObservation( current_frame_->features_right_[i] );
             
             // Associate the map point with the feature points
             current_frame_->features_left_[i]->map_point_ = new_map_point;
@@ -217,18 +217,19 @@ bool Frontend::StereoInit() {
     int num_features_left = DetectFeatures();
     // Find features in the right image that correspond to the features found in the left image
     int num_coor_features = FindFeaturesInRight();
+    
     // If the number of corresponding features found is less than the minimum required number, return false
-    if (num_coor_features < num_features_init_) {
+    if ( num_coor_features < num_features_init_ ) {
         return false;
     }
 
     // If enough corresponding features are found, build the initial map
     bool build_map_success = BuildInitMap();
     // If the map is successfully built, set the status to tracking good and update the viewer
-    if (build_map_success) {
+    if ( build_map_success ) {
         status_ = FrontendStatus::TRACKING_GOOD;
-        if (viewer_) {
-            viewer_->AddCurrentFrame(current_frame_);
+        if ( viewer_ ) {
+            viewer_->AddCurrentFrame( current_frame_ );
             viewer_->UpdateMap();
         }
         return true;
@@ -248,19 +249,20 @@ int Frontend::TrackLastFrame() {
     // Create vectors to store keypoints in the last and current frames
     std::vector<cv::Point2f> kps_last, kps_current;
     // Iterate through all the features in the last frame
-    for (auto &kp : last_frame_->features_left_) {
-        if (kp->map_point_.lock()) {
+    for ( auto &kp : last_frame_->features_left_ ) {
+
+        if ( kp->map_point_.lock() ) {
             // If a map point exists for the feature, use it to project
             // the 3D point onto the current frame
             auto mp = kp->map_point_.lock();
             auto px =
-                camera_left_->world2pixel(mp->pos_, current_frame_->Pose());
-            kps_last.push_back(kp->position_.pt);
-            kps_current.push_back(cv::Point2f(px[0], px[1]));
+                camera_left_->world2pixel( mp->pos_, current_frame_->Pose() );
+            kps_last.push_back( kp->position_.pt );
+            kps_current.push_back( cv::Point2f( px[0], px[1] ) );
         } else {
             // If no map point exists, simply use the feature's current position
-            kps_last.push_back(kp->position_.pt);
-            kps_current.push_back(kp->position_.pt);
+            kps_last.push_back( kp->position_.pt );
+            kps_current.push_back( kp->position_.pt );
         }
     }
 
@@ -276,14 +278,14 @@ int Frontend::TrackLastFrame() {
 
     int num_good_pts = 0;
     // Iterate through the tracked keypoints and add them to the current frame
-    for (size_t i = 0; i < status.size(); ++i) {
-        if (status[i]) {
+    for ( size_t i = 0; i < status.size(); ++i ) {
+        if ( status[i] ) {
             // If the keypoint was successfully tracked, create a new feature
             // and add it to the current frame
-            cv::KeyPoint kp(kps_current[i], 7);
-            Feature::Ptr feature(new Feature(current_frame_, kp));
+            cv::KeyPoint kp( kps_current[i], 7 );
+            Feature::Ptr feature( new Feature( current_frame_, kp ) );
             feature->map_point_ = last_frame_->features_left_[i]->map_point_;
-            current_frame_->features_left_.push_back(feature);
+            current_frame_->features_left_.push_back( feature );
             num_good_pts++;
         }
     }
@@ -492,7 +494,7 @@ int Frontend::TriangulateNewPoints() {
 bool Frontend::InsertKeyframe() {
 
     // Check if we still have enough inliers to continue tracking without inserting a new keyframe.
-    if (tracking_inliers_ >= num_features_needed_for_keyframe_) {
+    if ( tracking_inliers_ >= num_features_needed_for_keyframe_ ) {
         // We still have enough inliers, so we don't need to insert a new keyframe.
         return false;
     }
@@ -534,8 +536,8 @@ bool Frontend::InsertKeyframe() {
 */
 bool Frontend::Track() {
     // Set current frame pose relative to the last frame
-    if (last_frame_) {
-        current_frame_->SetPose(relative_motion_ * last_frame_->Pose());
+    if ( last_frame_ ) {
+        current_frame_->SetPose( relative_motion_ * last_frame_->Pose() );
     }
 
     // Track features from the last frame
@@ -545,10 +547,10 @@ bool Frontend::Track() {
     tracking_inliers_ = EstimateCurrentPose();
 
     // Update tracking status based on the number of inliers
-    if (tracking_inliers_ > num_features_tracking_) {
+    if ( tracking_inliers_ > num_features_tracking_ ) {
         // Tracking is good
         status_ = FrontendStatus::TRACKING_GOOD;
-    } else if (tracking_inliers_ > num_features_tracking_bad_) {
+    } else if ( tracking_inliers_ > num_features_tracking_bad_ ) {
         // Tracking is bad
         status_ = FrontendStatus::TRACKING_BAD;
     } else {
@@ -562,7 +564,7 @@ bool Frontend::Track() {
     relative_motion_ = current_frame_->Pose() * last_frame_->Pose().inverse();
 
     // Visualize the current frame if a viewer is available
-    if (viewer_) viewer_->AddCurrentFrame(current_frame_);
+    if ( viewer_ ) viewer_->AddCurrentFrame( current_frame_ );
     
     return true;
 }

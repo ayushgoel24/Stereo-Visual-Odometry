@@ -8,53 +8,56 @@
 
 namespace myslam {
 
-// forward declare
+// Forward declare MapPoint and Feature structs
 struct MapPoint;
 struct Feature;
 
 /**
- * frame
- * Each frame is assigned an independent id, and the key frame is assigned a key frame ID
+ * Frame
+ * Each frame is assigned an independent ID, and the key frame is assigned a key frame ID
  */
 struct Frame {
-   public:
+
+public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
     typedef std::shared_ptr<Frame> Ptr;
 
-    unsigned long id_ = 0;           // id of this frame
-    unsigned long keyframe_id_ = 0;  // id of key frame
-    bool is_keyframe_ = false;       // Is it a keyframe
+    unsigned long id_ = 0;           // ID of this frame
+    unsigned long keyframe_id_ = 0;  // ID of key frame
+    bool is_keyframe_ = false;       // Whether this frame is a keyframe
     double time_stamp_;              // Timestamp, not used yet
-    SE3 pose_;                       // Tcw form Pose
-    std::mutex pose_mutex_;          // Pose data lock
-    cv::Mat left_img_, right_img_;   // stereo images
+    SE3 pose_;                       // Pose of the camera in this frame, represented as Tcw
+    std::mutex pose_mutex_;          // Mutex for locking the pose data
+    cv::Mat left_img_, right_img_;   // Left and right stereo images
 
-    // extracted features in left image
+    // Extracted features in the left image
     std::vector<std::shared_ptr<Feature>> features_left_;
-    // corresponding features in right image, set to nullptr if no corresponding
+    // Corresponding features in the right image, set to nullptr if no corresponding feature is found
     std::vector<std::shared_ptr<Feature>> features_right_;
 
-   public:  // data members
+public:
+    // Default constructor
     Frame() {}
 
-    Frame(long id, double time_stamp, const SE3 &pose, const Mat &left,
-          const Mat &right);
+    // Constructor
+    Frame( long id, double time_stamp, const SE3 &pose, const Mat &left, const Mat &right );
 
-    // set and get pose, thread safe
+    // Get the pose of the camera in this frame
     SE3 Pose() {
-        std::unique_lock<std::mutex> lck(pose_mutex_);
+        std::unique_lock<std::mutex> lck( pose_mutex_ );
         return pose_;
     }
 
+    // Set the pose of the camera in this frame
     void SetPose(const SE3 &pose) {
-        std::unique_lock<std::mutex> lck(pose_mutex_);
+        std::unique_lock<std::mutex> lck( pose_mutex_ );
         pose_ = pose;
     }
 
-    // Set keyframe and assign and keyframe id
+    // Set this frame as a keyframe and assign a keyframe ID
     void SetKeyFrame();
 
-    // factory build mode, assign id
+    // Factory build mode, create a new frame and assign an ID to it
     static std::shared_ptr<Frame> CreateFrame();
 };
 

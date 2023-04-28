@@ -43,7 +43,7 @@ public:
         camera_right_ = right;
     }
 
-   private:
+private:
     /**
      * Track in normal mode
      * @return true if success
@@ -121,8 +121,9 @@ public:
     std::shared_ptr<Backend> backend_ = nullptr;
     std::shared_ptr<Viewer> viewer_ = nullptr;
 
-    SE3 relative_motion_;  // The relative motion between the current frame and the previous frame is used 
-                           // to estimate the initial value of the pose of the current frame
+    // The relative motion between the current frame and the previous frame is used 
+    // to estimate the initial value of the pose of the current frame
+    SE3 relative_motion_;
 
     int tracking_inliers_ = 0;  // inliers, used for testing new keyframes
 
