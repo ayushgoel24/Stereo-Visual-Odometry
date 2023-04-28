@@ -9,4 +9,7 @@ camera:
   ux: 325.1
   vy: 249.7
 
+num_features: 150
+num_features_init: 50
+num_features_tracking: 50
 
