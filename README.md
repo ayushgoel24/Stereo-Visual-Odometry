@@ -1,5 +1,23 @@
 # Stereo Visual Odometry using Kitty Dataset
 
+## Key Concepts Used
+1. Lucas-Kanade Optical Flow for Feature tracking
+2. GFTT ( Good Features to Track ) for extracting features
+3. Multi-Threading, Mutexes
+
+## Edge Cases
+- [x] Handled the case where the number of active keyframes exceeds a predefined number.
+- [ ] Changes in brightness settings
+- [ ] Tracking is lost
+
+## Scope of Improvements
+1. Compare GFTT with other feature extraction algorithms such as ORB, SIFT since GFTT is not a fast algorithm.
+2. Parameterized optimization methods to compare the performance.
+3. Comparison with other feature tracking algorithms.
+4. Quantification of results.
+
+---
+
 ## Running the code
 ### Build the file using
 ```
