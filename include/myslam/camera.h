@@ -23,8 +23,7 @@ public:
 
     Camera();
 
-    Camera(double fx, double fy, double cx, double cy, double baseline,
-           const SE3 &pose)
+    Camera( double fx, double fy, double cx, double cy, double baseline, const SE3 &pose )
         : fx_(fx), fy_(fy), cx_(cx), cy_(cy), baseline_(baseline), pose_(pose) {
         // Compute inverse of extrinsics
         pose_inv_ = pose_.inverse();
