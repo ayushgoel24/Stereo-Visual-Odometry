@@ -9,51 +9,58 @@ namespace myslam {
 class Map;
 
 /**
- * rear end
+ * @brief Backend class for performing optimization in a separate thread
+ * 
  * There is a separate optimization thread, and the optimization is started when the Map is updated
  * Map updates are triggered by the frontend
- */ 
+*/
 class Backend {
-   public:
+   
+public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
     typedef std::shared_ptr<Backend> Ptr;
 
-    // Start the optimization thread in the constructor and hang
+    // Constructor that starts the optimization thread
     Backend();
 
     // Set the left and right purpose cameras to obtain internal and external parameters
-    void SetCameras(Camera::Ptr left, Camera::Ptr right) {
+    void SetCameras( Camera::Ptr left, Camera::Ptr right ) {
         cam_left_ = left;
         cam_right_ = right;
     }
 
-    /// set map
-    void SetMap(std::shared_ptr<Map> map) { map_ = map; }
+    // Set the map object for the backend to work with
+    void SetMap( std::shared_ptr<Map> map ) { map_ = map; }
 
-    /// Trigger map update, start optimization
+    // Trigger map update and start optimization
     void UpdateMap();
 
-    /// Close the backend thread
+    // Stop the backend thread
     void Stop();
 
-   private:
-    /// backend thread
+private:
+    
+    // Backend thread function
     void BackendLoop();
 
-    /// Optimize for a given keyframe and waypoint
-    void Optimize(Map::KeyframesType& keyframes, Map::LandmarksType& landmarks);
+    // Function to perform optimization for a given set of keyframes and landmarks
+    void Optimize( Map::KeyframesType& keyframes, Map::LandmarksType& landmarks );
 
-    std::shared_ptr<Map> map_;
-    std::thread backend_thread_;
-    std::mutex data_mutex_;
+    std::shared_ptr<Map> map_;      // Shared pointer to the Map object
+    std::thread backend_thread_;    // Thread object for the backend thread
+    std::mutex data_mutex_;         // Mutex object for thread safety
 
     /**
-     * After the backend is started, it will wait for the condition variable of map_update_
-     * When the map update is triggered, take the activated keyframes and map points from the map and perform optimization:
-    */
+     * Condition variable that the backend thread waits on until it is notified of a map update.
+     * When the map update is triggered, the backend thread takes the activated keyframes and map points 
+     * from the map and performs optimization:
+     */
     std::condition_variable map_update_;
+    
+    // Atomic boolean to indicate whether the backend thread is running or not
     std::atomic<bool> backend_running_;
 
+    // Shared pointers to the left and right cameras
     Camera::Ptr cam_left_ = nullptr, cam_right_ = nullptr;
 };
 
