@@ -1,4 +1,4 @@
-# Stereo Visual Odometry using Kitty Dataset
+# Stereo Visual Odometry using Kitti Dataset
 
 ## Key Concepts Used
 1. Lucas-Kanade Optical Flow for Feature tracking
@@ -27,7 +27,7 @@ cd build
 cmake ..
 make
 ```
-### Then to run on KITTY dataset
+### Then to run on KITTI dataset
 
 ```
 cd ~/ws
