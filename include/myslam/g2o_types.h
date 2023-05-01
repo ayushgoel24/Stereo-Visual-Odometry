@@ -16,30 +16,32 @@
 #include <g2o/solvers/dense/linear_solver_dense.h>
 
 namespace myslam {
-/// vertex and edges used in g2o ba
-/// pose vertices
+// vertex and edges used in g2o ba
+// pose vertices
 class VertexPose : public g2o::BaseVertex<6, SE3> {
-   public:
+   
+public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
     virtual void setToOriginImpl() override { _estimate = SE3(); }
 
     /// left multiplication on SE3
-    virtual void oplusImpl(const double *update) override {
+    virtual void oplusImpl( const double *update ) override {
         Vec6 update_eigen;
         update_eigen << update[0], update[1], update[2], update[3], update[4],
             update[5];
         _estimate = SE3::exp(update_eigen) * _estimate;
     }
 
-    virtual bool read(std::istream &in) override { return true; }
+    virtual bool read( std::istream &in ) override { return true; }
 
-    virtual bool write(std::ostream &out) const override { return true; }
+    virtual bool write( std::ostream &out ) const override { return true; }
 };
 
 /// signpost apex
 class VertexXYZ : public g2o::BaseVertex<3, Vec3> {
-   public:
+   
+public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
     virtual void setToOriginImpl() override { _estimate = Vec3::Zero(); }
 
@@ -56,10 +58,11 @@ class VertexXYZ : public g2o::BaseVertex<3, Vec3> {
 
 /// Estimate only the unary edges of the pose
 class EdgeProjectionPoseOnly : public g2o::BaseUnaryEdge<2, Vec2, VertexPose> {
-   public:
+   
+public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
-    EdgeProjectionPoseOnly(const Vec3 &pos, const Mat33 &K)
+    EdgeProjectionPoseOnly( const Vec3 &pos, const Mat33 &K )
         : _pos3d(pos), _K(K) {}
 
     virtual void computeError() override {
@@ -99,41 +102,53 @@ class EdgeProjectionPoseOnly : public g2o::BaseUnaryEdge<2, Vec2, VertexPose> {
 /// Binary edges with map and pose
 class EdgeProjection
     : public g2o::BaseBinaryEdge<2, Vec2, VertexPose, VertexXYZ> {
-   public:
+
+public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
-    /// Pass in the internal and external parameters of the camera during construction
+    // Pass in the internal and external parameters of the camera during construction
     EdgeProjection(const Mat33 &K, const SE3 &cam_ext) : _K(K) {
         _cam_ext = cam_ext;
     }
 
     virtual void computeError() override {
+        // Get the pose and position estimates from the two vertices
         const VertexPose *v0 = static_cast<VertexPose *>(_vertices[0]);
         const VertexXYZ *v1 = static_cast<VertexXYZ *>(_vertices[1]);
         SE3 T = v0->estimate();
+        // Project the position of the object onto the image plane using the camera's internal parameters
         Vec3 pos_pixel = _K * (_cam_ext * (T * v1->estimate()));
+        // Normalize the pixel coordinates to obtain homogeneous coordinates
         pos_pixel /= pos_pixel[2];
+        // Calculate the error between the predicted and measured pixel positions
         _error = _measurement - pos_pixel.head<2>();
     }
 
     virtual void linearizeOplus() override {
+        // Get the pose and position estimates from the two vertices
         const VertexPose *v0 = static_cast<VertexPose *>(_vertices[0]);
         const VertexXYZ *v1 = static_cast<VertexXYZ *>(_vertices[1]);
         SE3 T = v0->estimate();
         Vec3 pw = v1->estimate();
+        // Calculate the position of the object in the camera frame
         Vec3 pos_cam = _cam_ext * T * pw;
+        // Get the camera internal parameters
         double fx = _K(0, 0);
         double fy = _K(1, 1);
+        // Extract the x, y, and z coordinates of the position of the object in the camera frame
         double X = pos_cam[0];
         double Y = pos_cam[1];
         double Z = pos_cam[2];
+        // Compute the inverse of the z-coordinate with a small regularization term to avoid division by zero
         double Zinv = 1.0 / (Z + 1e-18);
+        // Compute the inverse squared of the z-coordinate
         double Zinv2 = Zinv * Zinv;
+        // Compute the partial derivatives of the error function with respect to the pose estimate
         _jacobianOplusXi << -fx * Zinv, 0, fx * X * Zinv2, fx * X * Y * Zinv2,
             -fx - fx * X * X * Zinv2, fx * Y * Zinv, 0, -fy * Zinv,
             fy * Y * Zinv2, fy + fy * Y * Y * Zinv2, -fy * X * Y * Zinv2,
             -fy * X * Zinv;
-
+        // Compute the partial derivatives of the error function with respect to the position estimate
         _jacobianOplusXj = _jacobianOplusXi.block<2, 3>(0, 0) *
                            _cam_ext.rotationMatrix() * T.rotationMatrix();
     }
@@ -142,7 +157,7 @@ class EdgeProjection
 
     virtual bool write(std::ostream &out) const override { return true; }
 
-   private:
+private:
     Mat33 _K;
     SE3 _cam_ext;
 };
