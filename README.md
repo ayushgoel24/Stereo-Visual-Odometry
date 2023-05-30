@@ -6,6 +6,9 @@
 
 This repository contains code for implementing Visual Odometry using stereo images from the Kitti dataset. The aim of this project is to estimate the camera motion and generate a trajectory using stereo images.
 
+## Pipeline
+![Pipeline](./static/images/pipeline.png)
+
 ## Key Concepts Used
 
 1. Lucas-Kanade Optical Flow: Optical flow is used for feature tracking in the stereo images. The Lucas-Kanade algorithm is employed to estimate the motion of features between consecutive frames.
@@ -91,7 +94,7 @@ I0204 14:58:25.420295 29886 visual_odometry.cpp:62] VO cost time: 0.00845767 sec
 ```
 
 ### Output GIF of the visual odometry
-![Output](result.gif)
+![Output](./static/gif/result.gif)
 
 ## Things to take care of
 1. Use 3rd party libraries for version compatibility
@@ -100,3 +103,13 @@ I0204 14:58:25.420295 29886 visual_odometry.cpp:62] VO cost time: 0.00845767 sec
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libffi.so.7
 ```
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Contact
+
+For any inquiries or questions, please contact [ayush.goel2427@gmail.com].
+
+Happy coding!
