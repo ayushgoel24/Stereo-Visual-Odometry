@@ -1,38 +1,74 @@
 # Stereo Visual Odometry using Kitti Dataset
 
+This repository contains code for implementing Visual Odometry using stereo images from the Kitti dataset. The aim of this project is to estimate the camera motion and generate a trajectory using stereo images.
+
 ## Key Concepts Used
-1. Lucas-Kanade Optical Flow for Feature tracking
-2. GFTT ( Good Features to Track ) for extracting features
-3. Multi-Threading, Mutexes
+
+1. Lucas-Kanade Optical Flow: Optical flow is used for feature tracking in the stereo images. The Lucas-Kanade algorithm is employed to estimate the motion of features between consecutive frames.
+
+2. GFTT (Good Features to Track): The GFTT algorithm is used for feature extraction. It identifies key points in the image that can be tracked across frames.
+
+3. Multi-Threading and Mutexes: Multi-threading and mutexes are utilized to optimize the performance of the algorithm. This allows for parallel processing and efficient synchronization of data.
 
 ## Edge Cases
-- [x] Handled the case where the number of active keyframes exceeds a predefined number.
-- [ ] Changes in brightness settings
-- [ ] Tracking is lost
+
+The following edge cases have been handled in the implementation:
+
+- [x] Handling the case where the number of active keyframes exceeds a predefined limit.
+- [ ] Adaptation to changes in brightness settings.
+- [ ] Recovery when tracking is lost.
 
 ## Scope of Improvements
-1. Compare GFTT with other feature extraction algorithms such as ORB, SIFT since GFTT is not a fast algorithm.
-2. Parameterized optimization methods to compare the performance.
-3. Comparison with other feature tracking algorithms.
-4. Quantification of results.
+
+There are several areas where the code can be improved and extended:
+
+1. Comparison of Feature Extraction Algorithms: In addition to GFTT, it would be beneficial to compare other feature extraction algorithms such as ORB and SIFT. This can help determine the most suitable algorithm for feature detection in different scenarios.
+
+2. Parameterized Optimization Methods: The performance of the odometry algorithm can be further improved by experimenting with different optimization methods and parameters. This would involve comparing the results achieved by varying optimization techniques.
+
+3. Comparison with Other Feature Tracking Algorithms: Apart from Lucas-Kanade, there are various other feature tracking algorithms available. Comparing the performance of different algorithms can provide insights into their strengths and weaknesses.
+
+4. Quantification of Results: To evaluate the accuracy and reliability of the visual odometry system, it would be helpful to quantify the results. This can be achieved by comparing the estimated trajectory with ground truth data and calculating metrics such as error metrics (e.g., RMSE) and trajectory similarity measures (e.g., Dynamic Time Warping).
 
 ---
 
-## Running the code
-### Build the file using
-```
-cd ~/ws
-mkdir build
-cd build
-cmake ..
-make
-```
-### Then to run on KITTI dataset
+## Running the Code
+
+To build the code, follow these steps:
+
+1. Navigate to the root directory of the project:
+   ```
+   cd ~/ws
+   ```
+
+2. Create a build directory:
+   ```
+   mkdir build
+   ```
+
+3. Enter the build directory:
+   ```
+   cd build
+   ```
+
+4. Generate the build files using CMake:
+   ```
+   cmake ..
+   ```
+
+5. Compile the code:
+   ```
+   make
+   ```
+
+To run the code on the KITTI dataset, execute the following command:
 
 ```
 cd ~/ws
 bin/run_kitti_stereo
 ```
+
+Ensure that the KITTI dataset is properly configured and accessible in the expected directory structure for the code to run successfully.
 
 ## Results
 
