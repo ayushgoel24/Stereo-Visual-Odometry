@@ -6,6 +6,19 @@
 
 This repository contains code for implementing Visual Odometry using stereo images from the Kitti dataset. The aim of this project is to estimate the camera motion and generate a trajectory using stereo images.
 
+## Table of Contents
+- [Overview](#overview)
+- [Pipeline](#pipeline)
+- [Key Concepts Used](#overview)
+- [Edge Cases](#overview)
+- [Scope of Improvements](#overview)
+- [Dependencies](#dependencies)
+- [Usage](#usage)
+- [Results](#results)
+- [License](#license)
+- [Contact](#contact)
+- [Acknowledgements](#acknowledgements)
+
 ## Pipeline
 ![Pipeline](./static/images/pipeline.png)
 
