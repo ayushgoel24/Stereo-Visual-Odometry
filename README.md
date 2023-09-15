@@ -9,15 +9,17 @@ This repository contains code for implementing Visual Odometry using stereo imag
 ## Table of Contents
 - [Overview](#overview)
 - [Pipeline](#pipeline)
-- [Key Concepts Used](#overview)
-- [Edge Cases](#overview)
-- [Scope of Improvements](#overview)
+- [Key Concepts Used](#key-concepts-used)
+- [Edge Cases](#edge-cases)
+- [Scope of Improvements](#scope-of-improvements)
 - [Dependencies](#dependencies)
 - [Usage](#usage)
 - [Results](#results)
 - [License](#license)
 - [Contact](#contact)
 - [Acknowledgements](#acknowledgements)
+
+## Overview
 
 ## Pipeline
 ![Pipeline](./static/images/pipeline.png)
@@ -50,9 +52,10 @@ There are several areas where the code can be improved and extended:
 
 4. Quantification of Results: To evaluate the accuracy and reliability of the visual odometry system, it would be helpful to quantify the results. This can be achieved by comparing the estimated trajectory with ground truth data and calculating metrics such as error metrics (e.g., RMSE) and trajectory similarity measures (e.g., Dynamic Time Warping).
 
----
 
-## Running the Code
+## Dependencies
+
+## Usage
 
 To build the code, follow these steps:
 
