@@ -58,7 +58,7 @@ int Frontend::DetectFeatures() {
     // in previous frames. By masking out these features, the detector can focus on detecting new 
     // features in the current frame.
     for ( auto &feat : current_frame_->features_left_ ) {
-        cv::rectangle( mask, feat->position_.pt - cv::Point2f(10, 10), feat->position_.pt + cv::Point2f(10, 10), 0, CV_FILLED );
+        cv::rectangle( mask, feat->position_.pt - cv::Point2f(10, 10), feat->position_.pt + cv::Point2f(10, 10), 0, cv::FILLED );
     }
 
     // detect new keypoints using the GFTT feature detector
@@ -309,8 +309,8 @@ int Frontend::EstimateCurrentPose() {
     typedef g2o::LinearSolverDense<BlockSolverType::PoseMatrixType>
         LinearSolverType;
     auto solver = new g2o::OptimizationAlgorithmLevenberg(
-        g2o::make_unique<BlockSolverType>(
-            g2o::make_unique<LinearSolverType>()));
+        std::make_unique<BlockSolverType>(
+            std::make_unique<LinearSolverType>()));
     g2o::SparseOptimizer optimizer;
     optimizer.setAlgorithm(solver);
 

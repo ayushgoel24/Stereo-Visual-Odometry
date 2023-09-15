@@ -24,7 +24,7 @@ namespace myslam
         }
 
         // initialize dataset
-        dataset_ = Dataset::Ptr( new Dataset( Config::Get<std::string>( "dataset_dir" ) ) );
+        dataset_ = Dataset::Ptr( new Dataset( Config::Get<std::string>( "dataset.path" ) ) );
         
         // The `CHECK_EQ()` macro is typically used for testing whether a condition is true, and if it is not, it will terminate the program with an error message.
         CHECK_EQ( dataset_->Init(), true );

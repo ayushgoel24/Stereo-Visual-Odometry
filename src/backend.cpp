@@ -54,8 +54,8 @@ void Backend::Optimize( Map::KeyframesType &keyframes, Map::LandmarksType &landm
     typedef g2o::LinearSolverCSparse<BlockSolverType::PoseMatrixType> LinearSolverType;
     // optimization method
     auto solver = new g2o::OptimizationAlgorithmLevenberg(
-        g2o::make_unique<BlockSolverType>(
-            g2o::make_unique<LinearSolverType>()));
+        std::make_unique<BlockSolverType>(
+            std::make_unique<LinearSolverType>()));
     // graph optimizer
     g2o::SparseOptimizer optimizer;
     // setting optimization algorithm
