@@ -77,6 +77,19 @@ There are several areas where the code can be improved and extended:
 
 
 ## Dependencies
+To successfully run the stereo VO implementation, ensure that the following dependencies are installed and properly configured on your system:
+
+1. **ceres-solver**: An open-source C++ library that facilitates modeling and solving large, complicated optimization problems. It's particularly useful for our project as it aids in the Bundle Adjustment process.
+
+2. **DBow3**: An enhanced version of the DBow2 library, DBow3 aids in image-based loop closure detection. 
+
+3. **g2o**: A versatile library concentrating on the optimized graph structures typically required by modern SLAM or BA problems. Essential for our project's optimization backend.
+
+4. **Pangolin**: Pangolin provides a platform for visualizing datasets and also aids in user interfaces for our stereo VO project.
+
+5. **Sophus**: Sophus deals with Lie groups and their algebra. It's fundamental for representing the SO(3) and SE(3) transformations in our project.
+
+6. **OpenCV**: An open-source computer vision library that offers a multitude of tools and utilities for image and video processing, feature detection, and many more functionalities integral to our project.
 
 ## Usage
 
