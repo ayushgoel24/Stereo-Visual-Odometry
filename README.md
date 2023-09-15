@@ -20,6 +20,19 @@ This repository contains code for implementing Visual Odometry using stereo imag
 - [Acknowledgements](#acknowledgements)
 
 ## Overview
+Stereo Visual Odometry (VO) is a critical technique in computer vision and robotics that computes the relative position and orientation of a stereo camera over time by analyzing the two successive image frames. The primary advantage of stereo VO is its capability to gain depth perception, making it more robust in various scenarios as compared to its monocular counterpart.
+
+In this repository, we delve deep into the world of stereo VO, understanding its nuances and implementing a simplified yet effective version. We specifically target its application on the Kitti dataset to witness its efficacy and robustness.
+
+The core philosophy behind opting for stereo VO stems from two pivotal reasons:
+
+Ease of Implementation: Stereo vision, despite its profound capabilities, is surprisingly straightforward to actualize. A distinct advantage is the potential to initialize in just a single frame, thereby making the overall process swift and efficient.
+3D Observation Prowess: Unlike monocular cameras, which can struggle with depth perception, stereo cameras inherently possess the capability to observe in 3D. This 3D observation significantly amplifies the overall accuracy of the system, especially in scenarios with varying depths.
+We've structured our implementation around a frontend-backend architecture. The frontend focuses on the optical flow tracking— a method that gauges how points in a scene move or the apparent motion of objects in the visual scape. In contrast, our backend is geared towards bundle adjustment (BA), an optimization technique that refines camera parameters and 3D points to minimize reprojection errors.
+
+Diving into the architecture, our codebase has been organized in line with standard practices for small algorithm libraries, ensuring that users can intuitively understand and navigate the various components of our stereo VO implementation.
+
+We invite you to explore, experiment with, and enhance this stereo VO project. Your journey begins here!
 
 ## Pipeline
 ![Pipeline](./static/images/pipeline.png)
