@@ -26,8 +26,10 @@ In this repository, we delve deep into the world of stereo VO, understanding its
 
 The core philosophy behind opting for stereo VO stems from two pivotal reasons:
 
-Ease of Implementation: Stereo vision, despite its profound capabilities, is surprisingly straightforward to actualize. A distinct advantage is the potential to initialize in just a single frame, thereby making the overall process swift and efficient.
-3D Observation Prowess: Unlike monocular cameras, which can struggle with depth perception, stereo cameras inherently possess the capability to observe in 3D. This 3D observation significantly amplifies the overall accuracy of the system, especially in scenarios with varying depths.
+1. **Ease of Implementation**: Stereo vision, despite its profound capabilities, is surprisingly straightforward to actualize. A distinct advantage is the potential to initialize in just a single frame, thereby making the overall process swift and efficient.
+
+2. **3D Observation Prowess**: Unlike monocular cameras, which can struggle with depth perception, stereo cameras inherently possess the capability to observe in 3D. This 3D observation significantly amplifies the overall accuracy of the system, especially in scenarios with varying depths.
+
 We've structured our implementation around a frontend-backend architecture. The frontend focuses on the optical flow tracking— a method that gauges how points in a scene move or the apparent motion of objects in the visual scape. In contrast, our backend is geared towards bundle adjustment (BA), an optimization technique that refines camera parameters and 3D points to minimize reprojection errors.
 
 Diving into the architecture, our codebase has been organized in line with standard practices for small algorithm libraries, ensuring that users can intuitively understand and navigate the various components of our stereo VO implementation.
@@ -35,6 +37,14 @@ Diving into the architecture, our codebase has been organized in line with stand
 We invite you to explore, experiment with, and enhance this stereo VO project. Your journey begins here!
 
 ## Pipeline
+The SLAM system pipeline can be broadly divided into frontend and backend processes, both running on separate threads.
+
+1. Frontend: Ingests an image frame from the sensor and extracts its features. It performs optical flow tracking with the previous frame and calculates the frame’s position. New feature points are possibly added and triangulated. The frontend results act as initial values for backend optimization.
+
+2. Backend: A slower thread that receives keyframes and landmark points, optimizes them, and returns the optimized results. It also controls the optimization problem's scale.
+
+Interactions occur through a map module that handles data flow between frontend and backend.
+
 ![Pipeline](./static/images/pipeline.png)
 
 ## Key Concepts Used
