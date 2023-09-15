@@ -131,6 +131,8 @@ Ensure that the KITTI dataset is properly configured and accessible in the expec
 
 ## Results
 
+The system effectively displays keyframes and maps. For non-keyframes, processing time is approximately 16ms. This time increases for keyframes due to added feature extraction. The map will expand in memory, and users can choose to retain only the active part if needed.
+
 ### Output will be like
 
 ```
@@ -162,6 +164,10 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Contact
 
-For any inquiries or questions, please contact [ayush.goel2427@gmail.com].
+For any issues, queries, or feedback, please contact: [ayush.goel2427@gmail.com].
+
+## Acknowledgements
+
+We are grateful to the Kitti dataset creators and the contributors who provided invaluable feedback and enhancements to the project.
 
 Happy coding!
